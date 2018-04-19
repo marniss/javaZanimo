@@ -25,14 +25,15 @@ import java.util.Date;
 public class FicheDeSoin implements ificheDeSoinInterface {
 
 //Les attributs
-    private int id_f_Soin;
+    private int id;
     private int id_membre;
     private String observation;
     private String medicament;
     private Date prochainRDV;
     private int id_animal;
-    private Date datecreation;
+    private Date dateCreation;
     private int etat;
+
     SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 //Les attributs DB
     Connection conn = DataSource.getInstance().getConnection();
@@ -50,7 +51,7 @@ public class FicheDeSoin implements ificheDeSoinInterface {
     }
 
     public FicheDeSoin(int id_f_Soin, int id_membre, String observation, String medicament, Date prochainRDV, int id_animal, int etat) {
-        this.id_f_Soin = id_f_Soin;
+        this.id = id_f_Soin;
         this.id_membre = id_membre;
         this.observation = observation;
         this.medicament = medicament;
@@ -64,7 +65,7 @@ public class FicheDeSoin implements ificheDeSoinInterface {
         this.id_membre = id_membre;
         this.observation = observation;
         this.medicament = medicament;
-        this.datecreation = datecreation;
+        this.dateCreation = datecreation;
         this.prochainRDV = prochainRDV;
         this.id_animal = id_animal;
         this.etat = etat;
@@ -79,11 +80,11 @@ public class FicheDeSoin implements ificheDeSoinInterface {
     }
 
     public int getId_f_Soin() {
-        return id_f_Soin;
+        return id;
     }
 
     public void setId_f_Soin(int id_f_Soin) {
-        this.id_f_Soin = id_f_Soin;
+        this.id = id_f_Soin;
     }
 
     public int getId_membre() {
@@ -147,9 +148,9 @@ public class FicheDeSoin implements ificheDeSoinInterface {
          */
 
         String dateprrdv = formater.format(this.prochainRDV);
-        String datepcre = formater.format(this.datecreation);
+        String datepcre = formater.format(this.dateCreation);
 
-        String req = "INSERT INTO `f_soin`(`id_f_Soin`, `id_membre`, `observation`, `medicament`, `dateCreation`,`prochainRDV`, `id_animal`, `etat`) VALUES (" + this.id_f_Soin + "," + this.id_membre + ",'" + this.observation + "','" + this.medicament + "','" + datepcre + "','" + dateprrdv + "'," + this.id_animal + ",1)";
+        String req = "INSERT INTO `f_soin`(`id`, `id_membre`, `observation`, `medicament`, `dateCreation`,`prochainRDV`, `id_animal`, `etat`) VALUES (" + this.id + "," + this.id_membre + ",'" + this.observation + "','" + this.medicament + "','" + datepcre + "','" + dateprrdv + "'," + this.id_animal + ",1)";
         try {
             /**
              * execution de la requette**
@@ -184,7 +185,7 @@ public class FicheDeSoin implements ificheDeSoinInterface {
 
         String date = formater.format(prochainRDV);
         System.out.println("Ahmeeeed date" + date);
-        String req = "UPDATE `f_soin` SET `id_membre`=" + this.id_membre + ",`observation`='" + this.observation + "',`medicament`='" + this.medicament + "',`prochainRDV`='" + date + "' WHERE `id_f_Soin`=" + this.id_f_Soin + ";";
+        String req = "UPDATE `f_soin` SET `id_membre`=" + this.id_membre + ",`observation`='" + this.observation + "',`medicament`='" + this.medicament + "',`prochainRDV`='" + date + "' WHERE `id`=" + this.id + ";";
         System.out.println(req);
         try {
             /*
@@ -210,13 +211,13 @@ public class FicheDeSoin implements ificheDeSoinInterface {
 
         FicheDeSoin fs = new FicheDeSoin();
 
-        String req = "Select *From f_soin where id_f_soin=?";
+        String req = "Select *From f_soin where id=?";
         try {
             ps = conn.prepareStatement(req);
-            ps.setInt(1, this.id_f_Soin);
+            ps.setInt(1, this.id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                fs.id_f_Soin = rs.getInt(1);
+                fs.id = rs.getInt(1);
                 fs.id_membre = rs.getInt(2);
                 fs.observation = rs.getString(3);
                 fs.medicament = rs.getString(4);
@@ -243,11 +244,11 @@ public class FicheDeSoin implements ificheDeSoinInterface {
             rs = ps.executeQuery();
             while (rs.next()) {
                 FicheDeSoin fs = new FicheDeSoin();
-                fs.id_f_Soin = rs.getInt(1);
+                fs.id = rs.getInt(1);
                 fs.id_membre = rs.getInt(2);
                 fs.observation = rs.getString(3);
                 fs.medicament = rs.getString("medicament");
-                fs.datecreation = rs.getDate("dateCreation");
+                fs.dateCreation = rs.getDate("dateCreation");
                 fs.prochainRDV = rs.getDate("prochainRDV");
                 fs.id_animal = rs.getInt("id_animal");
                 ficheDeSoins.add(fs);
@@ -267,9 +268,9 @@ public class FicheDeSoin implements ificheDeSoinInterface {
     @Override
     public int supprimerFicheDeSoin() {
         try {
-            String req = "update f_soin set etat= 0 where id_f_soin =? ";
+            String req = "update f_soin set etat= 0 where id =? ";
             ps = conn.prepareStatement(req);
-            ps.setInt(1, this.id_f_Soin);
+            ps.setInt(1, this.id);
             ps.execute();
 
             return 1;
